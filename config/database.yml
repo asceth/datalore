@@ -1,0 +1,7 @@
+base: &base
+  adapter: mysql2
+  username: root
+
+development:
+  <<: *base
+  database: datalore_development

@@ -1,0 +1,45 @@
+.row-fluid
+  .span12
+    %h2= @report.to_s
+
+    %h3 Fields
+    .row-fluid
+      .span6
+        %table.table.table-striped.table-bordered.table-condensed
+          %thead
+            %tr
+              %th Type
+              %th Field
+              %th Actions
+          %tbody
+            - @report.fields.each do |field|
+              %tr
+                %td
+                  - if field.filterable?
+                    %i.icon-leaf
+                  - if field.displayable?
+                    %i.icon-eye-open
+                  - if field.groupable?
+                    %i.icon-cogs
+                %td= field.to_s
+                %td
+                  .btn-group
+                    = link_to(content_tag(:i, '', :class => 'icon-pencil'), edit_report_field_url(@report, field), :class => 'btn btn-warning')
+                    = simple_form_for([@report, field], :method => :delete) do |f|
+                      = button_tag content_tag(:i, '', :class => 'icon-trash'), :class => 'btn btn-danger'
+
+    = link_to "New Field", new_report_field_url(@report), :class => 'btn btn-success'
+
+    %br
+    %br
+
+    %h3 Tables
+    .well
+      %ul
+        - @report.joins.map do |join|
+          %li= join.to_s
+
+      = link_to "New Join", new_report_join_url(@report), :class => 'btn btn-success'
+
+
+    = link_to 'Edit', edit_report_url(@report), :class => 'btn btn-primary'
