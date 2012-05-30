@@ -1,1 +1,44 @@
 // custom bootstrap mixins
+
+
+#grid {
+  .extra (@gridColumnWidth, @gridGutterWidth, @gridGutterHeight) {
+
+    .pushX (@index) when (@index > 0) {
+      (~".push@{index}") { .push(@index); }
+      .pushX(@index - 1);
+    }
+    .pushX (0) {}
+
+    .push (@columns) {
+      margin-left: (@gridGutterWidth * @columns) * 0.5;
+    }
+
+    .pushX (@gridColumns);
+
+    .pullX (@index) when (@index > 0) {
+      (~".pull@{index}") { .pull(@index); }
+      .pullX(@index - 1);
+    }
+    .pullX (0) {}
+
+    .pull (@columns) {
+      margin-left: -(@gridGutterWidth * @columns) * 0.5;
+    }
+
+    .pullX (@gridColumns);
+
+    .spaceX (@index) when (@index > 0) {
+      (~".space@{index}") { .space(@index); }
+      .spaceX(@index - 1);
+    }
+    .spaceX (0) {}
+
+    .space (@columns) {
+      margin-bottom: (@gridGutterHeight * @columns);
+    }
+
+    .spaceX (@gridColumns);
+  }
+}
+

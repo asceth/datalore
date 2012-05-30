@@ -1,0 +1,8 @@
+.row-fluid
+  .span12
+    %h2
+      New template
+      %small== #{@report.to_s} report
+    = simple_form_for([@report, @template]) do |f|
+      = f.input(:name)
+      = f.submit :class => 'btn-success'

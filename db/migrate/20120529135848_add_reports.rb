@@ -7,7 +7,7 @@ class AddReports < ActiveRecord::Migration
 
     create_table :joins do |t|
       t.belongs_to :report
-      t.boolean :root
+      t.boolean :root, :default => false
 
       t.string :primary_table_name
       t.string :primary_key
@@ -21,14 +21,43 @@ class AddReports < ActiveRecord::Migration
     create_table :fields do |t|
       t.belongs_to :report
 
-      t.boolean :filterable
-      t.boolean :displayable
-      t.boolean :groupable
+      t.boolean :filterable, :default => false
+      t.boolean :displayable, :default => false
+      t.boolean :groupable, :default => false
+
+      t.string :name
 
       t.string :table_name
       t.string :column_name
 
-      t.string :modifier
+      t.timestamps
+    end
+
+    create_table :templates do |t|
+      t.belongs_to :report
+
+      t.string :name
+
+      t.timestamps
+    end
+
+    create_table :template_fields do |t|
+      t.belongs_to :template
+      t.belongs_to :field
+
+      t.integer :field_type
+
+      # when displaying
+      t.integer :position
+      t.string :name
+
+      # when filtering or grouping
+      t.string :function
+
+      # when filtering
+      t.string :value
+      t.string :operator
+
       t.timestamps
     end
   end

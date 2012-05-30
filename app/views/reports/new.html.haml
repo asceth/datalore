@@ -4,6 +4,6 @@
       = f.input(:name)
       = f.simple_fields_for(:joins, @report.joins.build(:root => true)) do |oj|
         = oj.input(:root, :as => :hidden)
-        = oj.input(:primary_table_name, :collection => Report.tables)
+        = oj.input(:foreign_table_name, :collection => Report.tables)
 
       = f.submit :class => 'btn-success'

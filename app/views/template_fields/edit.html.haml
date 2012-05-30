@@ -1,0 +1,30 @@
+.row-fluid
+  .span12
+    = simple_form_for([@report, @template, @template_field], :html => {:class => 'form-horizontal'}) do |f|
+      %h3 Choose report field to use
+      .well
+        = f.association(:field, :collection => @report.fields)
+        - unless @template_field.new_record?
+          = f.input(:field_type, :collection => f.object.field_types, :as => :radio_buttons)
+
+      - unless @template_field.new_record?
+        %h3 Field Options
+        .well
+          = f.input(:name)
+          = f.input(:function, :collection => TemplateField.functions)
+
+      - unless @template_field.new_record?
+        %h3 Filterable Options
+        .well
+          = f.input(:operator, :collection => TemplateField.operators)
+          = f.input(:value)
+
+      - unless @template_field.new_record?
+        %h3 Displayable Options
+        .well
+          = f.input(:position)
+
+
+
+      = f.submit :class => 'btn-primary'
+

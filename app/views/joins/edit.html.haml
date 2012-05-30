@@ -1,0 +1,17 @@
+.row-fluid
+  .span12
+    = simple_form_for([@report, @join]) do |f|
+      %h3 Choose an existing linked table
+      .well
+        = f.input(:primary_table_name, :collection => @report.tables)
+        - unless @join.new_record?
+          = f.input(:primary_key, :collection => Report.table_columns(f.object.primary_table_name))
+
+      %h3 Choose table you want to join to the report
+      .well
+        = f.input(:foreign_table_name, :collection => f.object.foreign_tables)
+        - unless @join.new_record?
+          = f.input(:foreign_key, :collection => Report.table_columns(f.object.foreign_table_name))
+
+      = f.submit :class => 'btn-primary'
+

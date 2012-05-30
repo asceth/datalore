@@ -6,11 +6,11 @@ class Field < ActiveRecord::Base
   scope :groupable, where(:groupable => true)
 
   def to_s
-    "#{table_name}.#{column_name}"
+    "#{name} (#{table_name}.#{column_name})"
   end
 
-  def possible_columns
-    Arel::Table.new(table_name).try(:columns).map(&:name) || []
+  def to_fake_sql
+    "#{table_name}.#{column_name}"
   end
 end
 

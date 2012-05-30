@@ -1,45 +1,64 @@
-.row-fluid
+.row-fluid.space2
   .span12
-    %h2= @report.to_s
+    = link_to(icon('icon-arrow-left') + " Reports", reports_url, :class => 'btn btn-inverse')
+    %h2.space2= @report.to_s
+    .btn-group
+      = link_to 'Edit', edit_report_url(@report), :class => 'btn btn-primary'
 
+.row-fluid.space2
+  .span6
     %h3 Fields
-    .row-fluid
-      .span6
-        %table.table.table-striped.table-bordered.table-condensed
-          %thead
-            %tr
-              %th Type
-              %th Field
-              %th Actions
-          %tbody
-            - @report.fields.each do |field|
-              %tr
-                %td
-                  - if field.filterable?
-                    %i.icon-leaf
-                  - if field.displayable?
-                    %i.icon-eye-open
-                  - if field.groupable?
-                    %i.icon-cogs
-                %td= field.to_s
-                %td
-                  .btn-group
-                    = link_to(content_tag(:i, '', :class => 'icon-pencil'), edit_report_field_url(@report, field), :class => 'btn btn-warning')
-                    = simple_form_for([@report, field], :method => :delete) do |f|
-                      = button_tag content_tag(:i, '', :class => 'icon-trash'), :class => 'btn btn-danger'
+    %table.table.table-striped.table-bordered.table-condensed
+      %thead
+        %tr
+          %th Type
+          %th Name
+          %th Field
+          %th Actions
+      %tbody
+        - @report.fields.each do |field|
+          %tr
+            %td
+              %a.text-success= icon('icon-leaf', :title => 'Filterable') if field.filterable?
+              %a.text-inverse= icon('icon-eye-open', :title => 'Displayable') if field.displayable?
+              %a.text-info= icon('icon-cogs', :title => 'Groupable') if field.groupable?
+            %td= field.to_s
+            %td= field.to_fake_sql
+            %td
+              .btn-group
+                = link_to(icon('icon-edit'), edit_report_field_url(@report, field), :class => 'btn btn-warning')
+                = simple_form_for([@report, field], :method => :delete) do |f|
+                  = button_tag icon('icon-trash'), :class => 'btn btn-danger'
 
     = link_to "New Field", new_report_field_url(@report), :class => 'btn btn-success'
 
-    %br
-    %br
-
+  .span6
     %h3 Tables
+    %table.table.table-striped.table-bordered.table-condensed
+      %thead
+        %tr
+          %th Table
+          %th Join
+          %th Actions
+      %tbody
+        - @report.joins.map do |join|
+          %tr
+            %th= join.foreign_table_name
+            %th= join.to_s
+            %th
+              .btn-group
+                = link_to(icon('icon-edit'), edit_report_join_url(@report, join), :class => 'btn btn-warning')
+                = simple_form_for([@report, join], :method => :delete) do |f|
+                  = button_tag icon('icon-trash'), :class => 'btn btn-danger'
+
+    = link_to "New Join", new_report_join_url(@report), :class => 'btn btn-success'
+
+.row-fluid
+  .span12
+    %h3 Templates
     .well
       %ul
-        - @report.joins.map do |join|
-          %li= join.to_s
+        - @report.templates.each do |template|
+          %li= link_to template.to_s, report_template_url(@report, template)
+      = link_to 'New Template', new_report_template_url(@report), :class => 'btn btn-success'
 
-      = link_to "New Join", new_report_join_url(@report), :class => 'btn btn-success'
-
-
-    = link_to 'Edit', edit_report_url(@report), :class => 'btn btn-primary'

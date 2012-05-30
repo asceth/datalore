@@ -1,4 +1,4 @@
-class FieldsController < ApplicationController
+class JoinsController < ApplicationController
   inherit_resources
   belongs_to :report
 
@@ -8,7 +8,7 @@ class FieldsController < ApplicationController
   end
 
   def create
-    create! { edit_report_field_url(@report, @field) }
+    create! { edit_report_join_url(@report, @join) }
   end
 
   def update
