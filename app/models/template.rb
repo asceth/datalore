@@ -19,8 +19,9 @@ class Template < ActiveRecord::Base
     end
 
     # add in group
-    group = template_fields.groupable.first
-    query = query.group(group.to_arel_column) unless group.nil?
+    template_fields.groupable.each do |group|
+      query = query.group(group.to_arel_column)
+    end
 
     # add in field output
     if template_fields.displayable.empty?
