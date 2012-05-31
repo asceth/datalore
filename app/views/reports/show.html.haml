@@ -1,62 +1,64 @@
-.row-fluid.space2
-  .span12
-    = link_to(icon('icon-arrow-left') + " Reports", reports_url, :class => 'btn btn-inverse')
-    %h2.space2= @report.to_s
-    .btn-group
+= link_to(icon('icon-arrow-left') + " Reports", reports_url, :class => 'btn btn-inverse')
+
+%section
+  .page-header
+    .pull-right
       = link_to 'Edit', edit_report_url(@report), :class => 'btn btn-primary'
-
-.row-fluid.space2
-  .span6
-    %h3 Fields
-    %table.table.table-striped.table-bordered.table-condensed
-      %thead
-        %tr
-          %th Type
-          %th Name
-          %th Field
-          %th Actions
-      %tbody
-        - @report.fields.each do |field|
+    %h1= @report.to_s
+  %h2 Fields
+  .row
+    .span12
+      %table.table.table-striped.table-bordered.table-condensed
+        %thead
           %tr
-            %td
-              %a.text-success= icon('icon-leaf', :title => 'Filterable') if field.filterable?
-              %a.text-inverse= icon('icon-eye-open', :title => 'Displayable') if field.displayable?
-              %a.text-info= icon('icon-cogs', :title => 'Groupable') if field.groupable?
-            %td= field.to_s
-            %td= field.to_fake_sql
-            %td
-              .btn-group
-                = link_to(icon('icon-edit'), edit_report_field_url(@report, field), :class => 'btn btn-warning')
-                = simple_form_for([@report, field], :method => :delete) do |f|
-                  = button_tag icon('icon-trash'), :class => 'btn btn-danger'
-
-    = link_to "New Field", new_report_field_url(@report), :class => 'btn btn-success'
-
-  .span6
-    %h3 Tables
-    %table.table.table-striped.table-bordered.table-condensed
-      %thead
-        %tr
-          %th Table
-          %th Join
-          %th Actions
-      %tbody
-        - @report.joins.map do |join|
+            %th Type
+            %th Name
+            %th Field
+            %th Actions
+        %tbody
+          - @report.fields.each do |field|
+            %tr
+              %td
+                %a.text-success= icon('icon-leaf', :title => 'Filterable') if field.filterable?
+                %a.text-inverse= icon('icon-eye-open', :title => 'Displayable') if field.displayable?
+                %a.text-info= icon('icon-cogs', :title => 'Groupable') if field.groupable?
+              %td= field.to_s
+              %td= field.to_fake_sql
+              %td
+                .btn-group
+                  = link_to(icon('icon-edit'), edit_report_field_url(@report, field), :class => 'btn btn-warning')
+                  = simple_form_for([@report, field], :method => :delete) do |f|
+                    = button_tag icon('icon-trash'), :class => 'btn btn-danger'
           %tr
-            %th= join.foreign_table_name
-            %th= join.to_s
-            %th
-              .btn-group
-                = link_to(icon('icon-edit'), edit_report_join_url(@report, join), :class => 'btn btn-warning')
-                = simple_form_for([@report, join], :method => :delete) do |f|
-                  = button_tag icon('icon-trash'), :class => 'btn btn-danger'
+            %td{:colspan => "4"}
+              = link_to "New Field", new_report_field_url(@report), :class => 'btn btn-success'
 
-    = link_to "New Join", new_report_join_url(@report), :class => 'btn btn-success'
+  %h2 Tables
+  .row
+    .span12
+      %table.table.table-striped.table-bordered.table-condensed
+        %thead
+          %tr
+            %th Table
+            %th Join
+            %th Actions
+        %tbody
+          - @report.joins.map do |join|
+            %tr
+              %th= join.foreign_table_name
+              %th= join.to_s
+              %th
+                .btn-group
+                  = link_to(icon('icon-edit'), edit_report_join_url(@report, join), :class => 'btn btn-warning')
+                  = simple_form_for([@report, join], :method => :delete) do |f|
+                    = button_tag icon('icon-trash'), :class => 'btn btn-danger'
+          %tr
+            %td{:colspan => "3"}
+              = link_to "New Join", new_report_join_url(@report), :class => 'btn btn-success'
 
-.row-fluid
-  .span12
-    %h3 Templates
-    .well
+  %h2 Templates
+  .row
+    .span12
       %ul
         - @report.templates.each do |template|
           %li= link_to template.to_s, report_template_url(@report, template)

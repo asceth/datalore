@@ -30,6 +30,22 @@ class Template < ActiveRecord::Base
     end
   end
 
+  def rows
+    @rows ||= if ActiveRecord::Base.connection.adapter_name == "PostgreSQL"
+                result.entries
+              else
+                [].tap do |row_hashes|
+                  result.entries.map do |row|
+                    hash = {}
+                    result.fields.each do |field|
+                      hash[field] = row[result.fields.index(field)]
+                    end
+                    row_hashes << hash
+                  end
+                end
+              end
+  end
+
   def result
     begin
       @result ||= ActiveRecord::Base.connection.execute(to_arel.take(5).to_sql)

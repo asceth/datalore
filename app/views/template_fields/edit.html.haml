@@ -1,30 +1,36 @@
-.row-fluid
-  .span12
-    = simple_form_for([@report, @template, @template_field], :html => {:class => 'form-horizontal'}) do |f|
-      %h3 Choose report field to use
-      .well
-        = f.association(:field, :collection => @report.fields)
+%section
+  .page-header
+    %h1
+      Edit Field
+      %i.icon-arrow-right
+      = @template_field
+
+  .row
+    .span12
+      = simple_form_for([@report, @template, @template_field], :html => {:class => 'form-horizontal'}) do |f|
+        %fieldset
+          = f.association(:field, :collection => @report.fields)
+          - unless @template_field.new_record?
+            = f.input(:field_type, :collection => f.object.field_types, :as => :radio_buttons)
+
         - unless @template_field.new_record?
-          = f.input(:field_type, :collection => f.object.field_types, :as => :radio_buttons)
+          %fieldset
+            %legend Field Options
+            = f.input(:name)
+            = f.input(:function, :collection => TemplateField.functions)
 
-      - unless @template_field.new_record?
-        %h3 Field Options
-        .well
-          = f.input(:name)
-          = f.input(:function, :collection => TemplateField.functions)
+        - unless @template_field.new_record?
+          %fieldset
+            %legend Filterable Options
+            = f.input(:operator, :collection => TemplateField.operators)
+            = f.input(:value)
 
-      - unless @template_field.new_record?
-        %h3 Filterable Options
-        .well
-          = f.input(:operator, :collection => TemplateField.operators)
-          = f.input(:value)
+        - unless @template_field.new_record?
+          %fieldset
+            %legend Displayable Options
+            = f.input(:position)
 
-      - unless @template_field.new_record?
-        %h3 Displayable Options
-        .well
-          = f.input(:position)
-
-
-
-      = f.submit :class => 'btn-primary'
+        .form-actions
+          = f.submit 'Save changes', :class => 'btn btn-primary'
+          = link_to('Cancel', report_template_url(@report, @template), :class => 'btn')
 

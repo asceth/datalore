@@ -3,9 +3,9 @@
     = simple_form_for([@report, @field], :html => {:class => 'form-horizontal'}) do |f|
       %h3 Choose table
       .well
-        = f.input(:table_name, :collection => Report.tables)
+        = f.input(:table_name, :collection => @report.tables)
         - unless @field.new_record?
-          = f.input(:column_name, :collection => Report.table_columns(@field.table_name))
+          = f.input(:column_name, :collection => Report.table_columns(f.object.table_name))
 
       - unless @field.new_record?
         %h3 Field information

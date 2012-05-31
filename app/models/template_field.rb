@@ -13,9 +13,9 @@ class TemplateField < ActiveRecord::Base
   def to_fake_sql
     field.to_fake_sql.let do |fake_field|
       if function.blank?
-        "#{fake_field} as #{to_as}"
+        "#{fake_field}"
       else
-        "#{function}(#{fake_field}) as #{to_as}"
+        "#{function}(#{fake_field})"
       end
     end
   end
@@ -24,15 +24,7 @@ class TemplateField < ActiveRecord::Base
   # Arel Helpers
   #
   def to_as
-    if name.blank?
-      if field.name.blank?
-        "'#{table_name}.#{column_name}'"
-      else
-        "'#{field.name}'"
-      end
-    else
-      "'#{name}'"
-    end
+    "#{field.table_name}_#{field.column_name}"
   end
 
   def to_arel_where(arel)
@@ -45,12 +37,12 @@ class TemplateField < ActiveRecord::Base
         col
       else
         col.send(function)
-      end
-    end.let do |col|
-      if displayable?
-        col.as(self.to_as)
-      else
-        col
+      end.let do |col|
+        if displayable?
+          col.as(self.to_as)
+        else
+          col
+        end
       end
     end
   end

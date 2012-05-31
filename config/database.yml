@@ -1,7 +1,8 @@
 base: &base
-  adapter: mysql2
+  adapter: postgresql
   username: root
 
 development:
   <<: *base
-  database: datalore_development
+  username: jlong
+  database: gamesyn_development
