@@ -15,6 +15,13 @@
 //= require twitter/bootstrap
 //= require_tree .
 
+
 jQuery(function($) {
   $('*[title]').tooltip();
 });
+
+function add_fields(link, association, content) {
+  var new_id = new Date().getTime();
+  var regexp = new RegExp("new_" + association, "g")
+  $(link).parent().find("#new_" + association).append(content.replace(regexp, new_id));
+}

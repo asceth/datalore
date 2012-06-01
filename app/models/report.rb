@@ -27,6 +27,8 @@ class Report < ActiveRecord::Base
     end
 
     def table_columns(table_name)
+      return [] if table_name.blank?
+
       Arel::Table.new(table_name).try(:columns).map(&:name) || []
     end
   end

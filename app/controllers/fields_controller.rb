@@ -4,7 +4,10 @@ class FieldsController < ApplicationController
 
   def new
     build_resource
-    render :edit
+    respond_to do |format|
+      format.html { render :edit }
+      format.js { render :edit }
+    end
   end
 
   def create

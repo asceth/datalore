@@ -8,5 +8,7 @@ Datalore::Application.routes.draw do
     end
   end
 
+  resources :meta_columns, :only => [:index]
+
   root :to => 'reports#index'
 end

@@ -1,10 +1,24 @@
 = link_to(icon('icon-arrow-left') + " Reports", reports_url, :class => 'btn btn-inverse')
 
-%section
-  .page-header
-    .pull-right
-      = link_to 'Edit', edit_report_url(@report), :class => 'btn btn-primary'
-    %h1= @report.to_s
+= simple_form_for(@report) do |f|
+  %section
+    .page-header
+      %h1= f.input(:name)
+
+    %h2 Filters
+    .row
+      .span12
+        %table.table.table-striped
+          %thead
+            %tr
+              %th Name
+              %th Table
+              %th Column
+          %tbody#new_fields
+            = f.fields_for(:fields, f.object.fields.filterable) do |ff|
+              = render :partial => 'fields/fields', :locals => {:f => ff}
+        = link_to_add_fields "Add Filter", f, :fields, 'fields/', :class => 'btn btn-success'
+
   %h2 Fields
   .row
     .span12
