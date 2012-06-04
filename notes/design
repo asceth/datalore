@@ -1,0 +1,73 @@
+Reports
+  - Tables
+  - Columns
+  - Filters
+      - Locked
+  - Groups
+      - Locked
+
+  Template
+    - User Filter Values
+    - User Group Selection
+    - User Column Selection
+
+
+
+
+CLTC #
+Client Application Program
+Realized Authorization Service
+Client Area
+
+
+
+------------
+------------
+CLTC #                      -> root
+Client Application ID       -> clients.client_applications
+Program                     -> client_applications.program
+
+-----------
+-----------
+Realized Authorization ID   -> root
+CLTC #                      -> realized_authorizations.client
+Area                        -> clients.area
+Area                        -> realized_authorizations.area
+County                      -> clients.county
+
+
+-------------
+associations
+-------------
+
+realized_authorizations
+  - client (clients)
+  - area (areas)
+  - service (services)
+
+client_applications
+  - client (clients)
+  - assessments (assessments)
+  - program (programs)
+  - assigned_worker (users)
+
+clients
+  - area (areas)
+  - gender (genders)
+  - race (races)
+
+programs
+  - client_applications
+
+areas
+  - clients
+  - realized_authorizations
+
+
+
+
+
+
+
+
+
