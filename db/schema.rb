@@ -2069,16 +2069,6 @@ ActiveRecord::Schema.define(:version => 20120529135848) do
     t.integer  "enrolled"
   end
 
-  create_table "foreign_keys", :force => true do |t|
-    t.integer  "report_id"
-    t.string   "primary_table_name"
-    t.string   "primary_key"
-    t.string   "foreign_table_name"
-    t.string   "foreign_key"
-    t.datetime "created_at",         :null => false
-    t.datetime "updated_at",         :null => false
-  end
-
   create_table "forms", :force => true do |t|
     t.string "name"
     t.string "abbreviation"
@@ -2640,15 +2630,6 @@ ActiveRecord::Schema.define(:version => 20120529135848) do
   end
 
   add_index "meta_providers", ["inactive_at"], :name => "index_meta_providers_on_inactive_at"
-
-  create_table "metrics", :force => true do |t|
-    t.string   "name"
-    t.string   "category"
-    t.string   "table_name"
-    t.string   "column_name"
-    t.datetime "created_at",  :null => false
-    t.datetime "updated_at",  :null => false
-  end
 
   create_table "missed_visits", :force => true do |t|
     t.integer  "area_id"
@@ -3764,36 +3745,40 @@ ActiveRecord::Schema.define(:version => 20120529135848) do
     t.integer  "deleted_by"
   end
 
-  create_table "report_columns", :force => true do |t|
+  create_table "report_associations", :force => true do |t|
     t.integer  "report_id"
-    t.integer  "metric_id"
-    t.integer  "position_id"
-    t.datetime "created_at",  :null => false
-    t.datetime "updated_at",  :null => false
+    t.boolean  "root",               :default => false
+    t.string   "primary_table_name"
+    t.string   "primary_key"
+    t.string   "foreign_table_name"
+    t.string   "foreign_key"
+    t.datetime "created_at",                            :null => false
+    t.datetime "updated_at",                            :null => false
   end
 
-  create_table "report_filters", :force => true do |t|
+  add_index "report_associations", ["report_id"], :name => "index_report_associations_on_report_id"
+
+  create_table "report_metrics", :force => true do |t|
     t.integer  "report_id"
-    t.integer  "metric_id"
+    t.integer  "position"
+    t.boolean  "hidden"
     t.boolean  "locked"
     t.string   "function"
     t.string   "operator"
     t.string   "value"
-    t.datetime "created_at", :null => false
-    t.datetime "updated_at", :null => false
+    t.string   "name"
+    t.string   "table_name"
+    t.string   "column_name"
+    t.string   "metric_type"
+    t.datetime "created_at",  :null => false
+    t.datetime "updated_at",  :null => false
   end
 
-  create_table "report_groups", :force => true do |t|
-    t.integer  "report_id"
-    t.integer  "metric_id"
-    t.datetime "created_at", :null => false
-    t.datetime "updated_at", :null => false
-  end
+  add_index "report_metrics", ["report_id"], :name => "index_report_metrics_on_report_id"
 
   create_table "reports", :force => true do |t|
     t.string   "name"
     t.string   "category"
-    t.text     "joins"
     t.datetime "created_at", :null => false
     t.datetime "updated_at", :null => false
   end
@@ -4407,15 +4392,18 @@ ActiveRecord::Schema.define(:version => 20120529135848) do
     t.integer  "deleted_by"
   end
 
-  create_table "template_filters", :force => true do |t|
+  create_table "template_metrics", :force => true do |t|
     t.integer  "template_id"
-    t.integer  "report_filter_id"
+    t.integer  "report_metric_id"
     t.string   "function"
     t.string   "operator"
     t.string   "value"
     t.datetime "created_at",       :null => false
     t.datetime "updated_at",       :null => false
   end
+
+  add_index "template_metrics", ["report_metric_id"], :name => "index_template_metrics_on_report_metric_id"
+  add_index "template_metrics", ["template_id"], :name => "index_template_metrics_on_template_id"
 
   create_table "templates", :force => true do |t|
     t.integer  "report_id"
@@ -4424,6 +4412,8 @@ ActiveRecord::Schema.define(:version => 20120529135848) do
     t.datetime "created_at",     :null => false
     t.datetime "updated_at",     :null => false
   end
+
+  add_index "templates", ["report_id"], :name => "index_templates_on_report_id"
 
   create_table "therapeutic_classes", :force => true do |t|
     t.string "name"

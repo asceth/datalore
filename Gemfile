@@ -11,8 +11,6 @@ gem 'haml'
 
 gem 'inherited_resources'
 
-gem 'jquery-rails'
-
 gem 'ors'
 
 gem 'simple_form'
@@ -23,6 +21,9 @@ gem 'unicorn'
 # in production environments by default.
 group :assets do
   gem 'coffee-rails', '~> 3.2.1'
+
+  gem 'jquery-rails'
+  gem 'jquery-ui-rails'
 
   gem 'less'
   gem 'less-rails'

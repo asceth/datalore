@@ -1,7 +1,7 @@
 class MetaColumnsController < ApplicationController
   def index
     respond_to do |format|
-      format.json { Report.table_columns(params[:table_name] || params[:table]).to_json }
+      format.html { render :text => view_context.options_for_select(Report.table_columns(params[:id])) }
     end
   end
 end

@@ -1,0 +1,17 @@
+%tr
+  %td
+    = f.input(:id, :as => :hidden)
+    = f.input_field(:root, :as => :boolean)
+  %td
+    = f.input_field(:primary_table_name, :collection => f.object.report.tables, "data-populate-container" => "td", "data-populate" => meta_columns_url)
+    = f.input_field(:primary_key, :collection => Report.table_columns(f.object.primary_table_name), 'data-populate-target' => true)
+  %td
+    = f.input_field(:foreign_table_name, :collection => f.object.foreign_tables, "data-populate-container" => "td", "data-populate" => meta_columns_url)
+    = f.input_field(:foreign_key, :collection => Report.table_columns(f.object.foreign_table_name), 'data-populate-target' => true)
+  %td
+    - if f.object.new_record?
+      %a{:class => 'btn btn-danger', 'data-remove' => true, 'data-parent' => 'tr'}
+        = icon('icon-trash')
+    - else
+      = f.input_field(:_destroy, :as => :boolean)
+

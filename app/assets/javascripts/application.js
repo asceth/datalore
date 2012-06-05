@@ -12,16 +12,49 @@
 //
 //= require jquery
 //= require jquery_ujs
+//= require jquery.effects.highlight
 //= require twitter/bootstrap
 //= require_tree .
 
 
 jQuery(function($) {
   $('*[title]').tooltip();
+
+  // events for bootstrap collapse elements
+  $(".collapse").on('show', function () {
+    $(this).prev("h2").find("a[data-toggle='collapse'] > i").removeClass().addClass('icon-arrow-right');
+  });
+  $(".collapse").on('hide', function () {
+    $(this).prev("h2").find("a[data-toggle='collapse'] > i").removeClass().addClass('icon-arrow-down');
+  });
+
+  // removing a container element
+  $("a[data-remove]").live('click', function () {
+    $(this).parents($(this).data('parent')).first().remove();
+
+    return false;
+  });
+
+  $("*[data-populate]").live('change', function () {
+    source = $(this);
+    container = source.parents(source.attr("data-populate-container")).first();
+    target = container.find("select[data-populate-target]").first();
+
+    $.ajax({
+      url: source.data('populate'),
+      data: {id: source.val()},
+      dataType: "html"
+    }).done(function (data) {
+      target.html(data);
+      target.effect('highlight', {color: "#ffc40d"}, 800);
+    });
+  });
 });
 
-function add_fields(link, association, content) {
+function add_fields(link, association, target, content) {
   var new_id = new Date().getTime();
   var regexp = new RegExp("new_" + association, "g")
-  $(link).parent().find("#new_" + association).append(content.replace(regexp, new_id));
+  $(target).append(content.replace(regexp, new_id));
 }
+
+

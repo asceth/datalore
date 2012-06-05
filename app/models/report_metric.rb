@@ -1,7 +1,7 @@
 class ReportMetric < ActiveRecord::Base
   belongs_to :report
 
-  scope :columns, where(:metric_type => 'column')
+  scope :outputs, where(:metric_type => 'output')
   scope :filters, where(:metric_type => 'filter')
   scope :groups, where(:metric_type => 'group')
 
@@ -46,6 +46,7 @@ class ReportMetric < ActiveRecord::Base
   end
 
   def to_arel_where(arel, template_metric = nil)
+    arel.where(to_arel_column(template_metric).send(to_operator(template_metric), to_value(template_metric)))
   end
 
   def to_arel_column(template_metric = nil)
@@ -55,7 +56,7 @@ class ReportMetric < ActiveRecord::Base
       else
         col.send(function)
       end.let do |col|
-        if displayable?
+        if output?
           col.as(self.to_as)
         else
           col
@@ -74,7 +75,7 @@ class ReportMetric < ActiveRecord::Base
   #
   module ClassMethods
     def metric_types
-      ['column', 'filter', 'group']
+      ['output', 'filter', 'group']
     end
 
     def operators

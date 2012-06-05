@@ -2,7 +2,7 @@ class TemplateMetric < ActiveRecord::Base
   belongs_to :template
   belongs_to :report_metric
 
-  scope :columns, join(:report_metric).where('report_metric.metric_type' => 'column')
+  scope :outputs, join(:report_metric).where('report_metric.metric_type' => 'output')
   scope :filters, join(:report_metric).where('report_metric.metric_type' => 'filter')
   scope :groups, join(:report_metric).where('report_metric.metric_type' => 'group')
 
@@ -24,15 +24,14 @@ class TemplateMetric < ActiveRecord::Base
 
   #
   # Arel Helpers
+  #  delegates to report_metric
   #
-
-
   def to_arel_where(arel)
-    arel.where(to_arel_column.send(operator, value))
+    report_metric.to_arel_where(arel, self)
   end
 
   def to_arel_column
-
+    report_metric.to_arel_column(self)
   end
 
   def nilify_blank_columns

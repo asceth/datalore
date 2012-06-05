@@ -5,9 +5,13 @@
   .row
     .span12
       = simple_form_for(@report) do |f|
-        = f.input(:name)
-        = f.input(:category)
+        %fieldset
+          = f.input(:name)
+          = f.input(:category)
+          = f.simple_fields_for(:report_associations, f.object.report_associations.build(:root => true)) do |raf|
+            = raf.input(:root, :as => :hidden)
+            = raf.input(:foreign_table_name, :collection => Report.tables)
 
-      .form-actions
-        = f.submit :class => 'btn btn-primary'
-        = link_to 'Cancel', reports_url, :class => 'btn'
+          .form-actions
+            = f.submit :class => 'btn btn-primary'
+            = link_to 'Cancel', reports_url, :class => 'btn'

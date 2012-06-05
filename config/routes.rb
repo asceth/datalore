@@ -1,10 +1,10 @@
 Datalore::Application.routes.draw do
   resources :reports do
-    resources :joins
-    resources :fields
+    resources :report_associations
+    resources :report_metrics
 
     resources :templates do
-      resources :template_fields
+      resources :template_metrics
     end
   end
 

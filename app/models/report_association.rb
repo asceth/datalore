@@ -15,7 +15,7 @@ class ReportAssociation < ActiveRecord::Base
   end
 
   def foreign_tables
-    Report.tables - report.tables + [foreign_table_name]
+    (Report.tables - report.tables + [foreign_table_name]).reject(&:blank?)
   end
 
   def with(arel)

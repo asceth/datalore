@@ -3,78 +3,75 @@
 = simple_form_for(@report) do |f|
   %section
     .page-header
-      %h1= f.input(:name)
+      %h1
+        .input-prepend
+          %span.add-on
+            %small Name
+          = f.input_field(:name, :class => 'span10')
 
-    %h2 Filters
-    .row
+    %h2.pull1
+      %a{'data-toggle' => 'collapse', 'data-target' => '#outputs'}
+        %i.icon-arrow-right
+      Outputs
+    .row#outputs.collapse.in
       .span12
-        %table.table.table-striped
+        %table.table.table-striped.table-bottomless
           %thead
             %tr
               %th Name
-              %th Table
               %th Column
-          %tbody#new_fields
-            = f.fields_for(:fields, f.object.fields.filterable) do |ff|
-              = render :partial => 'fields/fields', :locals => {:f => ff}
-        = link_to_add_fields "Add Filter", f, :fields, 'fields/', :class => 'btn btn-success'
+              %th Position
+              %th Destroy
+          %tbody#new_report_outputs
+            = f.fields_for(:report_metrics, f.object.report_metrics.outputs.order('position asc')) do |ff|
+              = render :partial => 'report_metrics/fields', :locals => {:f => ff}
+        %p= link_to_add_nested text_with_icon('Add Output', 'icon-plus'), f, :report_metrics, :class => 'btn btn-mini btn-success btn-stretch', :build => {:metric_type => 'output'}, :target => "#new_report_outputs"
 
-  %h2 Fields
-  .row
-    .span12
-      %table.table.table-striped.table-bordered.table-condensed
-        %thead
-          %tr
-            %th Type
-            %th Name
-            %th Field
-            %th Actions
-        %tbody
-          - @report.fields.each do |field|
+    %h2.pull1
+      %a{'data-toggle' => 'collapse', 'data-target' => '#filters'}
+        %i.icon-arrow-right
+      Filters
+    .row#filters.collapse.in
+      .span12
+        %table.table.table-striped.table-bottomless
+          %thead
             %tr
-              %td
-                %a.text-success= icon('icon-leaf', :title => 'Filterable') if field.filterable?
-                %a.text-inverse= icon('icon-eye-open', :title => 'Displayable') if field.displayable?
-                %a.text-info= icon('icon-cogs', :title => 'Groupable') if field.groupable?
-              %td= field.to_s
-              %td= field.to_fake_sql
-              %td
-                .btn-group
-                  = link_to(icon('icon-edit'), edit_report_field_url(@report, field), :class => 'btn btn-warning')
-                  = simple_form_for([@report, field], :method => :delete) do |f|
-                    = button_tag icon('icon-trash'), :class => 'btn btn-danger'
-          %tr
-            %td{:colspan => "4"}
-              = link_to "New Field", new_report_field_url(@report), :class => 'btn btn-success'
+              %th Column
+              %th Operator
+              %th Value
+              %th Locked
+              %th Destroy
+          %tbody#new_report_filters
+            = f.fields_for(:report_metrics, f.object.report_metrics.filters) do |ff|
+              = render :partial => 'report_metrics/fields', :locals => {:f => ff}
+        %p= link_to_add_nested text_with_icon('Add Filter', 'icon-plus'), f, :report_metrics, :class => 'btn btn-mini btn-success btn-stretch', :build => {:metric_type => 'filter'}, :target => "#new_report_filters"
 
-  %h2 Tables
-  .row
-    .span12
-      %table.table.table-striped.table-bordered.table-condensed
-        %thead
-          %tr
-            %th Table
-            %th Join
-            %th Actions
-        %tbody
-          - @report.joins.map do |join|
+    %h2.pull1
+      %a{'data-toggle' => 'collapse', 'data-target' => '#associations'}
+        %i.icon-arrow-right
+      Associations
+    .row#associations.collapse.in
+      .span12
+        %table.table.table-striped.table-bottomless
+          %thead
             %tr
-              %th= join.foreign_table_name
-              %th= join.to_s
-              %th
-                .btn-group
-                  = link_to(icon('icon-edit'), edit_report_join_url(@report, join), :class => 'btn btn-warning')
-                  = simple_form_for([@report, join], :method => :delete) do |f|
-                    = button_tag icon('icon-trash'), :class => 'btn btn-danger'
-          %tr
-            %td{:colspan => "3"}
-              = link_to "New Join", new_report_join_url(@report), :class => 'btn btn-success'
+              %th Root
+              %th Primary Table
+              %th Foreign Table
+              %th Destroy
+          %tbody#new_report_associations
+            = f.fields_for(:report_associations) do |ff|
+              = render :partial => 'report_associations/fields', :locals => {:f => ff}
+        %p= link_to_add_nested text_with_icon('Add Association', 'icon-plus'), f, :report_associations, :class => 'btn btn-mini btn-success btn-stretch'
 
-  %h2 Templates
-  .row
-    .span12
-      %ul
-        - @report.templates.each do |template|
-          %li= link_to template.to_s, report_template_url(@report, template)
-      = link_to 'New Template', new_report_template_url(@report), :class => 'btn btn-success'
+    .form-actions
+      = f.submit 'Save changes', :class => 'btn btn-primary'
+
+    %h2 Templates
+    .row
+      .span12
+        %ul
+          - @report.templates.each do |template|
+            %li= link_to template.to_s, report_template_url(@report, template)
+        = link_to 'New Template', new_report_template_url(@report), :class => 'btn btn-success'
 

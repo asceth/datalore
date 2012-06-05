@@ -32,6 +32,17 @@ body {
   color: @textColor;
 }
 
+.table-bottomless {
+  margin-bottom: 0px;
+}
+
+.btn-stretch {
+  width: 100%;
+  text-align: center;
+  margin: 0 auto 18px auto;
+  border-radius: 0px;
+}
+
 .nav-horizontal, .sub-pagination {
   display: inline-block;
   margin: 0 0 0px 25px;
@@ -43,6 +54,27 @@ body {
     a {
       display: inline;
     }
+  }
+}
+
+.pull1 {
+  margin-left: -@gridGutterWidth;
+}
+
+h1 {
+  .input-prepend .add-on {
+    height: @baseLineHeight * 2;
+    margin-right: -11px;
+  }
+
+  label, input {
+    font-size: 30px;
+    line-height: @baseLineHeight * 2;
+    height: auto;
+  }
+
+  small input {
+    font-size: 18px;
   }
 }
 

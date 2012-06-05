@@ -1,0 +1,16 @@
+%tr
+  %td
+    = f.input(:id, :as => :hidden)
+    = f.input(:metric_type, :as => :hidden)
+    = f.input_field(:table_name, :collection => f.object.report.tables, "data-populate-container" => "tr", "data-populate" => meta_columns_url)
+    %br
+    = f.input_field(:column_name, :collection => Report.table_columns(f.object.table_name), 'data-populate-target' => true)
+  %td= f.input_field(:operator, :collection => ReportMetric.operators)
+  %td= f.input_field(:value)
+  %td= f.input_field(:locked, :as => :boolean)
+  %td
+    - if f.object.new_record?
+      %a{:class => 'btn btn-danger', 'data-remove' => true, 'data-parent' => 'tr'}
+        = icon('icon-trash')
+    - else
+      = f.input_field(:_destroy, :as => :boolean)

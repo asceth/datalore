@@ -1,6 +1,0 @@
-%tr
-  %td
-    = f.input(:id, :as => :hidden)
-    = f.input(:name, :label => false)
-  %td= f.input(:table_name, :collection => f.object.report.tables, :input_html => {"data-target" => "", "data-populate" => meta_columns_url}, :label => false)
-  %td= f.input(:column_name, :collection => Report.table_columns(f.object.table_name), :label => false)
