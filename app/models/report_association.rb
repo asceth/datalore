@@ -1,4 +1,4 @@
-class Join < ActiveRecord::Base
+class ReportAssociation < ActiveRecord::Base
   belongs_to :report
 
   scope :root, where(:root => true)

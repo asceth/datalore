@@ -1,22 +1,15 @@
 class AddReports < ActiveRecord::Migration
   def change
-    create_table :metrics do |t|
+    create_table :reports do |t|
       t.string :name
       t.string :category
-
-      t.boolean :initial
-
-      t.string :table_name
-      t.string :column_name
 
       t.timestamps
     end
 
-    create_table :associations do |t|
+    create_table :report_associations do |t|
       t.belongs_to :report
-      t.belongs_to :association
-
-      t.string :name
+      t.boolean :root, :default => false
 
       t.string :primary_table_name
       t.string :primary_key
@@ -27,24 +20,10 @@ class AddReports < ActiveRecord::Migration
       t.timestamps
     end
 
-    create_table :reports do |t|
-      t.string :name
-      t.string :category
-
-      t.text :joins
-
-      t.timestamps
-    end
-
     create_table :report_metrics do |t|
       t.belongs_to :report
-      t.belongs_to :metric
-      t.belongs_to :association
-
 
       t.integer :position # columns
-
-      t.integer :metric_type # column, filter, group
 
       # filters
       t.boolean :locked
@@ -56,6 +35,9 @@ class AddReports < ActiveRecord::Migration
 
 
       t.string :name
+      t.string :table_name
+      t.string :column_name
+      t.string :metric_type # column, filter, group
 
       t.timestamps
     end
@@ -70,9 +52,9 @@ class AddReports < ActiveRecord::Migration
       t.timestamps
     end
 
-    create_table :template_filters do |t|
+    create_table :template_metrics do |t|
       t.belongs_to :template
-      t.belongs_to :report_filter
+      t.belongs_to :report_metric
 
       t.string :function
       t.string :operator

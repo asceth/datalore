@@ -1,8 +1,8 @@
 class Template < ActiveRecord::Base
   belongs_to :report
-  has_many :template_fields
+  has_many :template_metrics
 
-  accepts_nested_attributes_for :template_fields
+  accepts_nested_attributes_for :template_metrics
 
   attr_accessor :error
 
@@ -14,23 +14,25 @@ class Template < ActiveRecord::Base
     query = report.to_arel
 
     # add in filters
-    query = template_fields.filterable.inject(query) do |arel, field|
-      field.to_arel_where(arel)
+    query = template_metrics.filters.inject(query) do |arel, filter|
+      filter.to_arel_where(arel)
     end
 
     # add in group
-    template_fields.groupable.each do |group|
+    template_metrics.groups.each do |group|
       query = query.group(group.to_arel_column)
     end
 
     # add in field output
-    if template_fields.displayable.empty?
+    if template_metrics.columns.empty?
       query.project(['no_fields'])
     else
-      query.project(template_fields.displayable.map(&:to_arel_column))
+      query.project(template_metrics.columns.map(&:to_arel_column))
     end
   end
 
+  # regardless of the adapter return an array of hashes where the hash
+  # uses  "column name" => value
   def rows
     @rows ||= if ActiveRecord::Base.connection.adapter_name == "PostgreSQL"
                 result.entries
