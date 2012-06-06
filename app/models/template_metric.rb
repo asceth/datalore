@@ -2,9 +2,11 @@ class TemplateMetric < ActiveRecord::Base
   belongs_to :template
   belongs_to :report_metric
 
-  scope :outputs, join(:report_metric).where('report_metric.metric_type' => 'output')
-  scope :filters, join(:report_metric).where('report_metric.metric_type' => 'filter')
-  scope :groups, join(:report_metric).where('report_metric.metric_type' => 'group')
+  scope :outputs, joins(:report_metric).where('report_metrics.metric_type' => 'output')
+  scope :filters, joins(:report_metric).where('report_metrics.metric_type' => 'filter')
+  scope :groups, joins(:report_metric).where('report_metrics.grouped' => true)
+
+  scope :unlocked, joins(:report_metric).where('report_metrics.locked' => false)
 
   before_save :nilify_blank_columns
 
@@ -32,6 +34,10 @@ class TemplateMetric < ActiveRecord::Base
 
   def to_arel_column
     report_metric.to_arel_column(self)
+  end
+
+  def to_arel_group
+    report_metric.to_arel_group(self)
   end
 
   def nilify_blank_columns

@@ -27,13 +27,14 @@ class AddReports < ActiveRecord::Migration
       t.belongs_to :report
 
       # output
-      t.integer :position
-      t.boolean :hidden
+      t.integer :position, :default => 0
+      t.boolean :hidden, :default => false
+      t.boolean :grouped, :default => false
       # end output
 
 
       # filters
-      t.boolean :locked
+      t.boolean :locked, :default => false
 
       t.string :function
       t.string :operator

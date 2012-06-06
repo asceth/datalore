@@ -19,13 +19,15 @@
           %thead
             %tr
               %th Name
+              %th Function
               %th Column
               %th Position
+              %th Group
               %th Destroy
           %tbody#new_report_outputs
             = f.fields_for(:report_metrics, f.object.report_metrics.outputs.order('position asc')) do |ff|
               = render :partial => 'report_metrics/fields', :locals => {:f => ff}
-        %p= link_to_add_nested text_with_icon('Add Output', 'icon-plus'), f, :report_metrics, :class => 'btn btn-mini btn-success btn-stretch', :build => {:metric_type => 'output'}, :target => "#new_report_outputs"
+        %p= link_to_add_nested text_with_icon('Add Output', 'icon-plus'), f, :report_metrics, :class => 'btn btn-mini btn-stretch btn-success', :build => {:metric_type => 'output'}, :target => "#new_report_outputs"
 
     %h2.pull1
       %a{'data-toggle' => 'collapse', 'data-target' => '#filters'}
@@ -36,6 +38,7 @@
         %table.table.table-striped.table-bottomless
           %thead
             %tr
+              %th Name
               %th Column
               %th Operator
               %th Value
@@ -60,7 +63,7 @@
               %th Foreign Table
               %th Destroy
           %tbody#new_report_associations
-            = f.fields_for(:report_associations) do |ff|
+            = f.fields_for(:report_associations, f.object.report_associations.order('id asc')) do |ff|
               = render :partial => 'report_associations/fields', :locals => {:f => ff}
         %p= link_to_add_nested text_with_icon('Add Association', 'icon-plus'), f, :report_associations, :class => 'btn btn-mini btn-success btn-stretch'
 

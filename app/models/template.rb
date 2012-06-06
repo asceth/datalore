@@ -13,21 +13,26 @@ class Template < ActiveRecord::Base
   def to_arel
     query = report.to_arel
 
-    # add in filters
-    query = template_metrics.filters.inject(query) do |arel, filter|
+    # add in unlocked filters
+    query = template_metrics.filters.unlocked.inject(query) do |arel, filter|
       filter.to_arel_where(arel)
     end
 
-    # add in group
-    template_metrics.groups.each do |group|
-      query = query.group(group.to_arel_column)
+    # add in locked filters
+    report.report_metrics.locked.each do |filter|
+      query = filter.to_arel_where(query)
     end
 
-    # add in field output
-    if template_metrics.columns.empty?
+    # add in groups
+    report.report_metrics.groups.each do |group|
+      query = query.group(group.to_arel_group)
+    end
+
+    # add in outputs
+    if report.report_metrics.outputs.empty?
       query.project(['no_fields'])
     else
-      query.project(template_metrics.columns.map(&:to_arel_column))
+      query.project(report.report_metrics.outputs.map(&:to_arel_column))
     end
   end
 
@@ -49,7 +54,8 @@ class Template < ActiveRecord::Base
               end
   end
 
-  def result
+  def result(concepts = {})
+    report.conceptualize(concepts)
     begin
       @result ||= ActiveRecord::Base.connection.execute(to_arel.take(5).to_sql)
     rescue Exception => e

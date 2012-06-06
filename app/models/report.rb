@@ -11,7 +11,7 @@ class Report < ActiveRecord::Base
   end
 
   def to_arel
-    report_associations.inject(report_associations.root.first.primary_table) do |query, association|
+    report_associations.branches.inject(report_associations.root.first.primary_table) do |query, association|
       association.with(query)
     end
   end
@@ -20,9 +20,30 @@ class Report < ActiveRecord::Base
     @tables ||= report_associations.map(&:foreign_table_name).uniq
   end
 
+  # used to build a template with appropriate template metrics
+  def build_default_template
+    templates.build.tap do |template|
+      report_metrics.filters.each do |metric|
+        template.template_metrics.build(:report_metric => metric)
+      end
+    end
+  end
+
+
+  module ConceptsMethods
+    def concepts
+      @concepts || {}
+    end
+
+    def conceptualize(value)
+      (@concepts || {}).merge(value) if value.is_a?(Hash)
+    end
+  end
+  include ConceptsMethods
+
   module ClassMethods
     def tables
-      ActiveRecord::Base.connection.tables
+      ActiveRecord::Base.connection.tables.sort
     end
 
     def table_columns(table_name)

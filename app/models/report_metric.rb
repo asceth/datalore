@@ -3,7 +3,9 @@ class ReportMetric < ActiveRecord::Base
 
   scope :outputs, where(:metric_type => 'output')
   scope :filters, where(:metric_type => 'filter')
-  scope :groups, where(:metric_type => 'group')
+  scope :groups, where(:grouped => true)
+
+  scope :ruby_groups, where(:metric_type => 'group')
 
   scope :locked, where(:locked => true)
   scope :unlocked, where(:locked => false)
@@ -35,7 +37,13 @@ class ReportMetric < ActiveRecord::Base
   end
 
   def to_value(template_metric = nil)
-    template_metric.try(:value) || value
+    template_metric.try(:value) || parse_concepts(value)
+  end
+
+  def parse_concepts(val)
+    report.concepts.each do |concept, value|
+      val = val.gsub("[#{concept}]", value)
+    end
   end
 
   #
@@ -46,21 +54,31 @@ class ReportMetric < ActiveRecord::Base
   end
 
   def to_arel_where(arel, template_metric = nil)
-    arel.where(to_arel_column(template_metric).send(to_operator(template_metric), to_value(template_metric)))
+    [to_operator(template_metric), to_value(template_metric)].let do |(op, val)|
+      if op.blank? || val.blank?
+        arel
+      else
+        arel.where(to_arel_column(template_metric).send(op, val))
+      end
+    end
   end
 
-  def to_arel_column(template_metric = nil)
+  def to_arel_group(template_metric = nil)
     to_arel_table[column_name].let do |col|
       if to_function(template_metric).blank?
         col
       else
         col.send(function)
-      end.let do |col|
-        if output?
-          col.as(self.to_as)
-        else
-          col
-        end
+      end
+    end
+  end
+
+  def to_arel_column(template_metric = nil)
+    to_arel_group(template_metric).let do |col|
+      if output?
+        col.as(self.to_as)
+      else
+        col
       end
     end
   end

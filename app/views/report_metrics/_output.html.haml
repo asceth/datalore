@@ -2,12 +2,14 @@
   %td
     = f.input(:id, :as => :hidden)
     = f.input(:metric_type, :as => :hidden)
-    = f.input_field(:name)
+    = f.input_field(:name, :class => 'span2')
+  %td= f.input_field(:function, :collection => ReportMetric.functions)
   %td
     = f.input_field(:table_name, :collection => f.object.report.tables, "data-populate-container" => "tr", "data-populate" => meta_columns_url)
     %br
     = f.input_field(:column_name, :collection => Report.table_columns(f.object.table_name), 'data-populate-target' => true)
   %td= f.input_field(:position, :class => "span1")
+  %td= f.input_field(:grouped, :as => :boolean)
   %td
     - if f.object.new_record?
       %a{:class => 'btn btn-danger', 'data-remove' => true, 'data-parent' => 'tr'}

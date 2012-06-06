@@ -1,68 +1,54 @@
 = link_to(icon('icon-arrow-left') + " Report", report_url(@report), :class => 'btn btn-inverse')
 
-%section
-  .page-header
-    .pull-right
-      = link_to('Edit', edit_report_template_url(@report, @template), :class => 'btn btn-primary')
-    %h1
-      = @report.to_s
-      %small= @template.to_s
+= simple_form_for([@report, @template]) do |f|
+  %section
+    .page-header
+      %h1
+        .input-prepend
+          %span.add-on
+            %small= f.object.report.to_s
+          = f.input_field(:name, :class => 'span10')
 
-  %h4 SQL
-  %p= @template.to_arel.to_sql
-
-  %h2 Fields
-  .row
-    .span12
-      %table.table.table-striped.table-bordered.table-condensed
-        %thead
-          %tr
-            %th Type
-            %th Name
-            %th Field
-            %th Actions
-        %tbody
-          - @template.template_fields.each do |template_field|
-            %tr
-              %td
-                - if template_field.filterable?
-                  %a.text-success= icon('icon-leaf', :title => 'Filterable')
-                - if template_field.displayable?
-                  %a.text-inverse= icon('icon-eye-open', :title => 'Displayable')
-                - if template_field.groupable?
-                  %a.text-info= icon('icon-cogs', :title => 'Groupable')
-              %td= template_field.field.to_s
-              %td= template_field.to_fake_sql
-              %td
-                .btn-group
-                  = link_to(icon('icon-edit'), edit_report_template_template_field_url(@report, @template, template_field), :class => 'btn btn-warning')
-                  = simple_form_for([@report, @template, template_field], :method => :delete) do |f|
-                    = button_tag icon('icon-trash'), :class => 'btn btn-danger'
-          %tr
-            %td{:colspan => "4"}
-              = link_to "New Template Field", new_report_template_template_field_url(@report, @template), :class => 'btn btn-success'
-
-
-  %h2 Result Preview
-  .row
-    .span12
-      - if @template.error?
-        %h4 Error encountered:
-        %p= @template.error.to_s
-      - else
-        %table.table.table-striped.table-bordered
+    %h2.pull1
+      %a{'data-toggle' => 'collapse', 'data-target' => '#filters'}
+        %i.icon-arrow-right
+      Filters
+    .row#filters.collapse.in
+      .span12
+        %table.table.table-striped.table-bottomless
           %thead
             %tr
-              - @template.result.fields.each do |field|
-                %th= field.to_s
+              %th Name
+              %th Operator
+              %th Value
           %tbody
-            - @template.rows.each do |row|
+            = f.fields_for(:template_metrics, f.object.template_metrics) do |ff|
+              = render :partial => 'template_metrics/fields', :locals => {:f => ff}
+
+        .form-actions
+          = f.submit 'Save Report', :class => 'btn btn-primary'
+
+    %h2 Result Preview
+    .row
+      .span12
+        - if @template.error?
+          %h4 Error encountered:
+          %p= @template.error.to_s
+        - else
+          %table.table.table-striped.table-bordered
+            %thead
               %tr
                 - @template.result.fields.each do |field|
-                  %td= row[field]
+                  %th= field.to_s
+            %tbody
+              - @template.rows.each do |row|
+                %tr
+                  - @template.result.fields.each do |field|
+                    %td= row[field]
 
-
-
-
+    %h4 SQL
+    .row
+      .span12
+        %p= @template.to_arel.to_sql
 
 
